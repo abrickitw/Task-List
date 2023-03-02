@@ -4,6 +4,8 @@ window.addEventListener('load', () => {
     const list_el = document.querySelector("#tasks");
     const taskEditButtons = document.querySelectorAll('.edit');
 
+
+
     const sanitize = (string) => {
         const regex = /[&<>"'`=\/]/g;
         const htmlEntities = {
@@ -85,11 +87,13 @@ window.addEventListener('load', () => {
             if (task_done_el.innerText.toLowerCase() == "done") {
                 task_input_el.setAttribute("readonly", "readonly");
                 task_input_el.style.textDecoration = 'line-through';
+                task_input_el.style.color = '#31BE05';
                 task_done_el.innerText = "UnDone";
             } else {
                 task_input_el.setAttribute("readonly", "readonly");
                 task_done_el.innerText = "DONE";
                 task_input_el.style.textDecoration = 'none';
+                task_input_el.style.color = '#DEF1D7';
             }
         });
 
@@ -105,7 +109,7 @@ window.addEventListener('load', () => {
             const taskContent = button.previousElementSibling.querySelector('.text').value.trim();
 
             // Set the main input field value to the task content
-           
+
 
             input.value = taskContent;
 
@@ -113,4 +117,59 @@ window.addEventListener('load', () => {
             input.focus();
         });
     });
+
+
+
+    // Define the function to get the cookies as an object
+    function getCookieAsObject() {
+        const cookieString = document.cookie;
+        if (cookieString) {
+            const cookies = cookieString
+                .split(';')
+                .map(cookie => cookie.trim())
+                .reduce((acc, cookie) => {
+                    const [name, value] = cookie.split('=');
+                    return { ...acc, [name]: value };
+                }, {});
+            return cookies;
+        } else {
+            return {};
+        }
+    }
+
+    // Define the function to display the cookies
+    function displayCookies() {
+        // Get the cookies as an object
+        const cookies = getCookieAsObject();
+        // Get a reference to the container element
+        const container = document.querySelector('#cookies');
+        // Clear the container element
+        container.innerHTML = '';
+        // Loop through each cookie and create a div to display its name and value
+
+        const cookieHeader = document.createElement('h2');
+        cookieHeader.textContent = 'Our cookies:';
+        container.appendChild(cookieHeader);
+
+
+        Object.keys(cookies).forEach((key) => {
+            const cookieDiv = document.createElement('div');
+            cookieDiv.textContent = `${key}: ${cookies[key]}`;
+            container.appendChild(cookieDiv);
+        });
+    }
+
+    // Attach an event listener to the document to listen for the "cookieShowB" event
+    document.addEventListener('cookieShowB', displayCookies);
+
+    // Attach an event listener to the form to listen for the submit event
+    document.getElementById('cookie-form').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        // Dispatch the "cookieShowB" event
+        document.dispatchEvent(new Event('cookieShowB'));
+    });
+
+
 });
+
